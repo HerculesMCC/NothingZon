@@ -423,7 +423,7 @@ class _NothingCardState extends State<NothingCard> {
                     duration: const Duration(milliseconds: 200),
                     transform: Matrix4.translationValues(0, isHovered ? 8 : 0, 0),
                     child: Text(
-                      isHovered ? 'GIFT WRAPPED' : 'ONLY',
+                      isHovered ? 'FREE SHIPPING' : 'ONLY',
                       style: TextStyle(
                         fontSize: 10,
                         fontWeight: FontWeight.bold,
