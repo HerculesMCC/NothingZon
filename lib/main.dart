@@ -1,6 +1,19 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart' hide Card;
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'dart:html' as html;
+import 'dart:js' as js;
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Initialiser Stripe seulement si ce n'est pas le web
+  if (!kIsWeb) {
+    Stripe.publishableKey = 'pk_live_51QXlYxEZxCby7GrItNxRVJ5Tn0kIE8lM1TNbGlIvW5ErLFNIKHYRf2tVaRGLyGNNgjn20GQ22HwJXKA56XC0b20j00rcKIzBUV';
+  }
+  
   runApp(const MainApp());
 }
 
@@ -27,54 +40,34 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.black.withOpacity(0.4),
-        title: ShaderMask(
-          shaderCallback: (bounds) => const LinearGradient(
-            colors: [Colors.white, Color(0xFFE0F2F1)],
-          ).createShader(bounds),
-          child: const Text(
-            'Buy Nothing, Get Everything!',
-            style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 1.2,
-              shadows: [
-                Shadow(
-                  color: Colors.white,
-                  offset: Offset(2, 2),
-                  blurRadius: 4,
-                ),
-              ],
-            ),
+        backgroundColor: const Color.fromARGB(255, 126, 125, 125),
+        title: const Text(
+          'NMAL',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
+            color: Colors.white,
           ),
         ),
-        centerTitle: true,
+        centerTitle: false,
         elevation: 0,
-        leading: const Padding(
-          padding: EdgeInsets.all(8.0),
-          child: Tooltip(
-            message: 'Free shipping worldwide!',
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                Icon(
-                  Icons.local_shipping,
+        actions: [
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                'BUY EVERYTHING, GET NOTHING',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  letterSpacing: 3,
                   color: Colors.white,
-                  size: 28,
                 ),
-                Positioned(
-                  right: -2,
-                  top: -2,
-                  child: Icon(
-                    Icons.check_circle,
-                    color: Colors.blueGrey,
-                    size: 14,
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
+        ],
       ),
       extendBodyBehindAppBar: true,
       body: Container(
@@ -83,7 +76,7 @@ class HomePage extends StatelessWidget {
             image: AssetImage('asset/mountain.jpg'),
             fit: BoxFit.cover,
             colorFilter: ColorFilter.mode(
-              Colors.white,
+              Colors.black26,
               BlendMode.darken,
             ),
           ),
@@ -92,8 +85,8 @@ class HomePage extends StatelessWidget {
           child: Column(
             children: [
               Container(
-                height: MediaQuery.of(context).size.height * 0.8,
-                padding: const EdgeInsets.all(32),
+                height: MediaQuery.of(context).size.height * 0.6,
+                padding: const EdgeInsets.all(16),
                 child: const Align(
                   alignment: Alignment.bottomLeft,
                   child: Column(
@@ -104,7 +97,7 @@ class HomePage extends StatelessWidget {
                         '"In a world obsessed with more,\nfind freedom in nothing."',
                         textAlign: TextAlign.left,
                         style: TextStyle(
-                          fontSize: 28,
+                          fontSize: 24,
                           fontWeight: FontWeight.w300,
                           color: Colors.white,
                           height: 1.5,
@@ -123,7 +116,7 @@ class HomePage extends StatelessWidget {
                       Text(
                         '— Sarah Chen',
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w400,
                           color: Colors.white70,
                           letterSpacing: 1.5,
@@ -133,7 +126,7 @@ class HomePage extends StatelessWidget {
                       Text(
                         'Minimalist Philosopher',
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 11,
                           fontWeight: FontWeight.w300,
                           color: Colors.white60,
                           letterSpacing: 1.0,
@@ -143,58 +136,65 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              GridView.count(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.fromLTRB(64, 32, 64, 32),
-                crossAxisCount: 3,
-                mainAxisSpacing: 32,
-                crossAxisSpacing: 32,
-                childAspectRatio: 0.85,
-                children: const [
-                  NothingCard(
-                    price: '4.99',
-                    description: 'Entry-level nothingness.\nPerfect for beginners!',
-                    index: 1,
-                    icon: Icons.remove_circle_outline,
-                    title: 'Basic Nothing',
-                  ),
-                  NothingCard(
-                    price: '9.41',
-                    description: 'Premium nothing with\nextra emptiness included',
-                    index: 2,
-                    icon: Icons.radio_button_unchecked,
-                    title: 'Premium Nothing',
-                  ),
-                  NothingCard(
-                    price: '15.76',
-                    description: 'Deluxe nothing.\nNow with invisible gift wrap!',
-                    index: 3,
-                    icon: Icons.blur_circular,
-                    title: 'Deluxe Nothing',
-                  ),
-                  NothingCard(
-                    price: '47.35',
-                    description: 'Artisanal nothing,\nhandcrafted by void experts',
-                    index: 4,
-                    icon: Icons.grain,
-                    title: 'Artisanal Nothing',
-                  ),
-                  NothingCard(
-                    price: '72.46',
-                    description: 'Limited edition nothing.\nRarer than rare!',
-                    index: 5,
-                    icon: Icons.stars,
-                    title: 'Limited Nothing',
-                  ),
-                  NothingCard(
-                    price: '134.11',
-                    description: 'Luxury nothing.\nStatus symbol of emptiness',
-                    index: 6,
-                    icon: Icons.diamond_outlined,
-                    title: 'Luxury Nothing',
-                  ),
-                ],
+              LayoutBuilder(
+                builder: (context, constraints) {
+                  int crossAxisCount = constraints.maxWidth > 800 ? 3 : 1;
+                  double padding = constraints.maxWidth > 800 ? 64.0 : 16.0;
+                  
+                  return GridView.count(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    padding: EdgeInsets.fromLTRB(padding, 32, padding, 32),
+                    crossAxisCount: crossAxisCount,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 0.85,
+                    children: const [
+                      NothingCard(
+                        price: '4.99',
+                        description: 'Entry-level nothingness.\nPerfect for beginners!',
+                        index: 1,
+                        icon: Icons.remove_circle_outline,
+                        title: 'Basic Nothing',
+                      ),
+                      NothingCard(
+                        price: '9.41',
+                        description: 'Premium nothing with\nextra emptiness included',
+                        index: 2,
+                        icon: Icons.radio_button_unchecked,
+                        title: 'Premium Nothing',
+                      ),
+                      NothingCard(
+                        price: '15.76',
+                        description: 'Deluxe nothing.\nNow with invisible gift wrap!',
+                        index: 3,
+                        icon: Icons.blur_circular,
+                        title: 'Deluxe Nothing',
+                      ),
+                      NothingCard(
+                        price: '47.35',
+                        description: 'Artisanal nothing,\nhandcrafted by void experts',
+                        index: 4,
+                        icon: Icons.grain,
+                        title: 'Artisanal Nothing',
+                      ),
+                      NothingCard(
+                        price: '72.46',
+                        description: 'Limited edition nothing.\nRarer than rare!',
+                        index: 5,
+                        icon: Icons.stars,
+                        title: 'Limited Nothing',
+                      ),
+                      NothingCard(
+                        price: '134.11',
+                        description: 'Luxury nothing.\nStatus symbol of emptiness',
+                        index: 6,
+                        icon: Icons.diamond_outlined,
+                        title: 'Luxury Nothing',
+                      ),
+                    ],
+                  );
+                },
               ),
             ],
           ),
@@ -280,6 +280,77 @@ class _NothingCardState extends State<NothingCard> {
     }
   }
 
+  Future<void> _handlePayment(String paymentMethod) async {
+    try {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()),
+      );
+
+      final response = await http.post(
+        Uri.parse('https://nothing-site-nu.vercel.app/api/create-payment-intent'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          'amount': (double.parse(widget.price) * 100).round(),
+          'currency': 'usd',
+          'payment_method': paymentMethod,
+        }),
+      );
+
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+
+      if (response.statusCode == 200) {
+        final paymentIntentData = jsonDecode(response.body);
+        
+        if (kIsWeb) {
+          if (paymentIntentData['id'] != null) {
+            final String sessionId = paymentIntentData['id'];
+            final stripe = html.window.document.createElement('script');
+            final stripeInstance = js.context.callMethod('Stripe', ['pk_live_51QXlYxEZxCby7GrItNxRVJ5Tn0kIE8lM1TNbGlIvW5ErLFNIKHYRf2tVaRGLyGNNgjn20GQ22HwJXKA56XC0b20j00rcKIzBUV']);
+            stripeInstance.callMethod('redirectToCheckout', [
+              js.JsObject.jsify({
+                'sessionId': sessionId,
+              })
+            ]);
+          } else {
+            throw 'Session ID not found in response: ${response.body}';
+          }
+        } else {
+          // Code mobile existant
+          await Stripe.instance.initPaymentSheet(
+            paymentSheetParameters: SetupPaymentSheetParameters(
+              paymentIntentClientSecret: paymentIntentData['clientSecret'],
+              merchantDisplayName: 'NMAL Store',
+            ),
+          );
+
+          await Stripe.instance.presentPaymentSheet();
+
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Paiement réussi!')),
+            );
+            _showSuccessDialog();
+          }
+        }
+      } else {
+        throw 'Error from server: ${response.body}';
+      }
+    } catch (e) {
+      print('Error in _handlePayment: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erreur: $e')),
+        );
+      }
+    }
+  }
+
   void _showPaymentDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -314,26 +385,11 @@ class _NothingCardState extends State<NothingCard> {
             ],
           ),
           actions: [
+
             TextButton(
               onPressed: () {
-                // Logique pour PayPal
                 Navigator.pop(context);
-                print('PayPal payment for ${widget.title}');
-              },
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.payment),
-                  SizedBox(width: 8),
-                  Text('PayPal'),
-                ],
-              ),
-            ),
-            TextButton(
-              onPressed: () {
-                // Logique pour Carte bancaire
-                Navigator.pop(context);
-                print('Card payment for ${widget.title}');
+                _handlePayment('card');
               },
               child: const Row(
                 mainAxisSize: MainAxisSize.min,
@@ -354,8 +410,26 @@ class _NothingCardState extends State<NothingCard> {
     );
   }
 
+  void _showSuccessDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Paiement réussi !'),
+        content: const Text('Merci pour votre achat de rien !'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('OK'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    bool isSmallScreen = MediaQuery.of(context).size.width <= 800;
+    
     return MouseRegion(
       onEnter: (_) => setState(() => isHovered = true),
       onExit: (_) => setState(() => isHovered = false),
@@ -375,14 +449,14 @@ class _NothingCardState extends State<NothingCard> {
                 children: [
                   Icon(
                     widget.icon,
-                    size: 48,
+                    size: isSmallScreen ? 36 : 48,
                     color: Colors.white,
                   ),
                   const SizedBox(height: 8),
                   Text(
                     widget.title,
                     style: TextStyle(
-                      fontSize: 20, 
+                      fontSize: isSmallScreen ? 18 : 20,
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                     ),
@@ -392,40 +466,35 @@ class _NothingCardState extends State<NothingCard> {
                     widget.description,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: isSmallScreen ? 11 : 12,
                       fontStyle: FontStyle.italic,
                       color: Colors.white.withOpacity(0.9),
                     ),
                   ),
                   const SizedBox(height: 8),
-                  Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Text(
-                        '\$${widget.price}',
-                        style: TextStyle(
-                          fontSize: 32,
-                          fontWeight: FontWeight.w900,
-                          letterSpacing: 1.5,
-                          color: Colors.white,
-                          shadows: [
-                            Shadow(
-                              color: Colors.black45,
-                              offset: const Offset(2, 2),
-                              blurRadius: 4,
-                            ),
-                          ],
+                  Text(
+                    '\$${widget.price}',
+                    style: TextStyle(
+                      fontSize: isSmallScreen ? 28 : 32,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: 1.5,
+                      color: Colors.white,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black45,
+                          offset: const Offset(2, 2),
+                          blurRadius: 4,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
                     transform: Matrix4.translationValues(0, isHovered ? 8 : 0, 0),
                     child: Text(
-                      isHovered ? 'FREE SHIPPING' : 'ONLY',
+                      isHovered ? 'GIFT WRAPPED' : 'ONLY',
                       style: TextStyle(
-                        fontSize: 10,
+                        fontSize: isSmallScreen ? 9 : 10,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         letterSpacing: 3,

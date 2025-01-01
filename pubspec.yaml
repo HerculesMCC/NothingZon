@@ -10,6 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_paypal: ^0.0.8
+  flutter_stripe: ^11.3.0
+  http: ^0.13.3
+  json_annotation: ^4.8.1
 
 dev_dependencies:
   flutter_test:
@@ -21,3 +24,6 @@ flutter:
   assets:
     - asset/mountain.jpg
     - asset/blanc.jpg
+    - asset/mauvaiscoin.jpeg
+
+
